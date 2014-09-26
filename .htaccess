@@ -1,0 +1,36 @@
+# @what Definições de opções de servidor.
+# @why Obtenção de mais controle sobre o comportamento do servidor.
+Options -Indexes
+Options	-Multiviews
+Options +FollowSymLinks
+
+# @what Definição de redirecionamento.
+# @why Permitir o uso de URLs amigáveis.
+RewriteEngine On
+RedirectMatch 301 ^(.+)/$ $1
+RewriteCond %{REQUEST_URI} ^.*\.php$ [OR]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ index.php [L]
+
+# @what Definindo arquivo índice da aplicação.
+# @why Definir qual arquivo deverá ser considerado índice.
+DirectoryIndex index.php index.html
+
+# @what Evitar mostrar erros ao usuário.
+# @why Proteger a tecnologia utilizada.
+#php_flag display_startup_errors off
+#php_flag display_errors off
+#php_flag html_errors off
+
+# @what Definindo páginas de erro personalizadas.
+# @why Permitir dar ao usuário informações sobre erros.
+ErrorDocument 400 /error/400.php
+ErrorDocument 401 /error/401.php
+ErrorDocument 403 /error/403.php
+ErrorDocument 404 /error/404.php
+ErrorDocument 405 /error/405.php
+ErrorDocument 406 /error/406.php
+ErrorDocument 500 /error/500.php
+ErrorDocument 502 /error/502.php
+ErrorDocument 503 /error/503.php

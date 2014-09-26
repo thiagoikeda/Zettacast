@@ -1,0 +1,4 @@
+# @what Bloqueios de acesso direto por URL
+# @why Proteção de conteúdo do diretório
+Satisfy All
+Deny from All
