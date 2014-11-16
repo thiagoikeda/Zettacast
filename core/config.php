@@ -1,54 +1,150 @@
 <?php
 
-class Config{
+/**
+ * @brief 
+ * @author Rodrigo Siqueira <rodriados@gmail.com>
+ * @since 0.1
+ */
+class Config {
 	
-	private static $data = [];
-	
-	public function __construct() {
-		
-		$default = parse_ini_file(CONFIG.'/general.ini', true);
-		self::$data = $default;
-		
-		date_default_timezone_set(self::get('app.timezone'));
-		
-	}
-	
-	public static function get($element){
+	/*
+	 * Inclusão de contrato Singleton. Este contrato
+	 * implementa o padrão Singleton que permite a existência
+	 * de uma e apenas uma instância do objeto.
+	 */
+	use Singleton;
 
-		$sections = explode('.', $element);
-		$select =& self::$data;
+	/**
+	 * @var array Lista de dados de configurações.
+	 */
+	protected $data = [];
+	
+	/**
+	 * @var array Lista de arquivos já lidos.
+	 */
+	protected $files = [];
+	
+	/**
+	 * Inicialização e construção de instância de classe.
+	 * Método responsável por gerenciar, administrar e
+	 * executar todas as ações do objeto.
+	 * @brief Constrói e inicializa uma nova instância.
+	 * @retval Config
+	 */
+	protected function __construct() {
 		
-		if(!isset(self::$data[$sections[0]]) and file_exists(CONFIG."/{$sections[0]}.ini")):
-			self::$data[$sections[0]] = parse_ini_file(CONFIG."/{$sections[0]}.ini", true);
-		endif;
-		
-		foreach($sections as $section):
-			if((array)$select === $select and isset($select[$section])):
-				$select =& $select[$section];
-			else:
-				return null;
-			endif;
-		endforeach;
-		
-		return $select;
+		self::$instance = $this;
+		self::load('general', false);
 				
 	}
+		
+	/**
+	 * @brief
+	 * @param string $element Configuração a ser buscada.
+	 * @param mixed $default Opção retornada caso configuração não exista.
+	 * @retval mixed
+	 * @see set
+	 */
+	public static function get($element, $default = null) {
+
+		$found = self::find($element, false);		
+		return $found instanceof Config ? $default : $found;
+						
+	}
 	
-	public static function set($element, $value){
+	/**
+	 * @brief
+	 * @param string $element Configuração a ser adicionada.
+	 * @param string $value Valor da configuração adicionada.
+	 * @retval null
+	 * @see get
+	 */
+	public static function set($element, $value) {
 		
-		$sects = explode('.', $element);
-		$select =& self::$data;
+		$found = &self::find($element, true);
+		$found = $value;
 		
-		foreach($sects as $section):
-			if((array)$select === $select and isset($select[$section])):
-				$select =& $select[$section];
+	}
+
+	/**
+	 * @brief
+	 * @param string $target Configuração a ser encontrada.
+	 * @param bool $build Construir árvore de configuração não existente.
+	 * @retval &mixed Seção ou configuração encontrada.
+	 * @see get, set
+	 */
+	protected static function &find($target, $build){
+		
+		$cpath = explode('.', $target);
+		$select = &self::i()->data;
+			
+		foreach($cpath as $pth):
+			if(is_array($select) and isset($select[$pth])):
+				$select = &$select[$pth];
+			elseif(is_array($select) and $build):
+				$select[$pth] = [];
+				$select = &$select[$pth];
+			elseif($build):
+				$select = [$pth => []];
+				$select = &$select[$pth];
 			else:
-				$select[$section] = [];
-				$select =& $select[$section];
+				return self::i();
 			endif;
 		endforeach;
+				
+		return $select;
+			
+	}
+	
+	/**
+	 * @brief
+	 * @param string $file Arquivo a ser lido.
+	 * @param string|bool $group Definição de grupo.
+	 * @param bool $reload Recarregar arquivo já aberto?
+	 * @retval bool O arquivo foi aberto e lido?
+	 */
+	public static function load($file, $group = true, $reload = false) {
 		
-		$select = $value;
+		if( (!$reload and in_array($file, self::i()->files))
+			or !file_exists(CONFIG."/{$file}.php")
+		):
+			return false;
+			
+		endif;
+		
+		$data = include CONFIG."/{$file}.php";
+		self::i()->files[] = $file;
+		
+		if(is_string($group)):
+			self::i()->data[$group] = $data;
+		elseif(!$group):
+			self::i()->data = array_merge(self::i()->data, $data);
+		else:
+			self::i()->data[$file] = $data;
+		endif;
+		
+		return true;
+		
+	}
+	
+	/**
+	 * @brief
+	 * @param string $group Grupo a ser salvo.
+	 * @param string|null $file Arquivo de destino.
+	 * @retval bool Houve sucesso ao salvar?
+	 */
+	public static function save($group, $file = null){
+		
+		$g = self::find($group, false);
+		$data = str_replace('  ', "\t", var_export($g, true));
+		$content = "<?php\n\nreturn {$data};\n";
+		$fname = $file ?: str_replace('.', '/', $group);
+		
+		if($g instanceof Config):
+			return false;
+		endif;
+		
+		return (bool)file_put_contents(CONFIG."/{$fname}.php", $content);
 				
 	}
 	

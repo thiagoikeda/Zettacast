@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @defgroup DirConst Constantes de Diretórios.
  * Constantes de nomes de diretórios. As constantes
  * definidas nesse grupo, tem como objetivo, auxiliar
  * na inclusão de arquivos que encontram-se em muitos
  * diretórios diferentes.
+ * @defgroup DirConst Constantes de Diretórios.
  * @{
  */
 define('ROOT', getcwd());
