@@ -19,6 +19,14 @@ class Kernel {
 	public $modules = [];
 	
 	/**
+	 * Propriedade estática responsável pelo armazenamento
+	 * temporário de dados da aplicação.
+	 * @todo Remover essa propriedade.
+	 * @var array Lista com dados da aplicação.
+	 */
+	public static $data = [];
+	
+	/**
 	 * Inicialização e construção de instância de classe.
 	 * Método responsável por gerenciar, administrar e executar
 	 * todas as ações do objeto.
@@ -28,7 +36,11 @@ class Kernel {
 	public function __construct() {
 		
 		spl_autoload_register([$this, "__load"]);
-				
+		date_default_timezone_set(Config::get('app.timezone'));
+
+		$page = URI::segment(1) ?: 'main';
+		$this->addpage($page);
+		
 	}
 	
 	/**
@@ -50,6 +62,19 @@ class Kernel {
 		endif;
 		
 		return false;
+		
+	}
+	
+	private function addpage($pgname) {
+		
+		$fn = PAGE."/{$pgname}/controller.php";
+		file_exists($fn) ?: include ERROR.'/404.php';
+		
+		require FUNC.'/basic.php';
+		Basic\addcss('global', 'all');
+		Basic\addjs('jquery');
+		
+		require $fn;
 		
 	}
 		

@@ -81,7 +81,7 @@ class URI {
 		@list($request) = explode('?', $full, 2);
 		list($base, $segments) = explode('/', $request, 2);
 				
-		$this->base = ($https ? 'https' : 'http') . "://{$base}/";
+		$this->base = ($https ? 'https' : 'http') . "://{$base}";
 		$this->segments = explode('/', $segments);
 				
 	}
@@ -109,18 +109,21 @@ class URI {
 	/**
 	 * @brief
 	 * @param int $index Índice do segmento a ser acessado.
-	 * @return string|bool
+	 * @return string
 	 */
-	public static function segment($index = null) {
+	public static function segment($index) {
 		
-		if(is_int($index) and count(self::i()->segments) > $index):
-			return self::i()->segments[$index];
+		if(is_int($index) and count(self::i()->segments) >= $index):
+			return self::i()->segments[$index - 1];
 		endif;
 		
-		return false;
+		return null;
 		
 	}
-		
+	
+	/**
+	 * @todo Implementar esse método.
+	 */
 	//public static function create($uri = null, $vars = [], $get = [], $secure = false) {}
 	
 	/**

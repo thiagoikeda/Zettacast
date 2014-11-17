@@ -12,6 +12,8 @@ define('ROOT', getcwd());
 define('CONFIG', ROOT.'/config');
 define('ERROR', ROOT.'/error');
 define('CORE', ROOT.'/core');
+define('PAGE', ROOT.'/page');
+define('FUNC', ROOT.'/func');
 define('LOG', ROOT.'/log');
 /**@}*/
 
