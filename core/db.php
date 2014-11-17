@@ -32,7 +32,7 @@ class DB {
 	 * @brief Constrói e inicializa uma nova instância.
 	 * @retval DB
 	 */
-	public function __construct() {
+	protected function __construct() {
 		
 		try {
 			$dsn = sprintf(
@@ -46,7 +46,7 @@ class DB {
 		}
 		
 		catch (PDOException $e) {
-			Log::error('connection to db failed');
+			Log::error('db', 'Connection to db failed.');
 			require ERROR.'/500.php';
 			
 		}

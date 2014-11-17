@@ -28,7 +28,7 @@ class Kernel {
 		require CORE.'/db.php';
 	#	require CORE.'/url.php';
 	#	require CORE.'/user.php';
-								
+		
 	}
 	
 }
