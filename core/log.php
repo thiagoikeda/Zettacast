@@ -5,7 +5,7 @@
  * @author Rodrigo Siqueira <rodriados@gmail.com>
  * @since 0.1
  */
-class Log{
+class Log {
 
 	/*
 	 * Inclusão de contrato Singleton. Este contrato

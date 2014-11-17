@@ -10,7 +10,14 @@
  * @since 0.1
  */
 class Kernel {
-		
+	
+	/**
+	 * Propriedade responsável por listar todas os módulos
+	 * carregados e em uso pela aplicação.
+	 * @var array Lista de módulos carregados.
+	 */
+	public $modules = [];
+	
 	/**
 	 * Inicialização e construção de instância de classe.
 	 * Método responsável por gerenciar, administrar e executar
@@ -19,16 +26,31 @@ class Kernel {
 	 * @retval Kernel
 	 */
 	public function __construct() {
-		session_name('sess');
-		session_start();
-	
-		require CORE.'/singleton.php';
-		require CORE.'/config.php';
-		require CORE.'/log.php';
-		require CORE.'/db.php';
-	#	require CORE.'/url.php';
-	#	require CORE.'/user.php';
 		
+		spl_autoload_register([$this, "__load"]);
+				
 	}
 	
+	/**
+	 * Carrega objetos não existentes na execução automaticamente.
+	 * Isso permite que não haja preocupações relacionadas à
+	 * existência ou não de um objeto.
+	 * @brief Carrega objetos automaticamente.
+	 * @param string $name Nome do objeto a ser carregado.
+	 * @retval boolean Objeto carregado com sucesso?
+	 */
+	public function __load($name){
+		
+		$fn = strtolower($name);
+		
+		if(file_exists(CORE."/{$fn}.php")):
+			$this->modules[] = $fn;
+			require CORE."/{$fn}.php";
+			return true;
+		endif;
+		
+		return false;
+		
+	}
+		
 }

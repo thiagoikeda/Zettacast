@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @brief Variáveis de configuração e conexão da aplicação.
  * Interface de armazenamento de variáveis de configuração
  * da aplicação. Dados confidenciais como acesso ao banco de
  * dados, além de outros dados importantes são armazenados aqui.
+ * @brief Variáveis de configuração e conexão da aplicação.
  * @author Rodrigo Siqueira <rodriados@gmail.com>
  * @since 0.1
  */

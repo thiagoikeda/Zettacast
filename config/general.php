@@ -9,15 +9,6 @@ return array(
 		"timezone" => "America/Sao_Paulo",
     ),
 	
-	"session" => array(
-		"name" => "sess",
-		"path" => "/",
-		"domain" => "",
-		"secure" => false,
-		"httponly" => true,
-		"lifetime" => 0,
-    ),
-	
 	"db" => array(
 		"driver" => "mysql",
 		"charset" => "utf8",
