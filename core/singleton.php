@@ -21,11 +21,11 @@ trait Singleton {
 	 */
 	protected static function &i() {
 		
-		if(!isset(static::$instance)):
-			static::$instance = new static;
+		if(!isset(self::$instance)):
+			self::$instance = new self;
 		endif;
 		
-		return static::$instance;
+		return self::$instance;
 		
 	}
 	
