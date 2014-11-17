@@ -39,7 +39,7 @@ class Kernel {
 	 * @param string $name Nome do objeto a ser carregado.
 	 * @retval boolean Objeto carregado com sucesso?
 	 */
-	public function __load($name){
+	public function __load($name) {
 		
 		$fn = strtolower($name);
 		

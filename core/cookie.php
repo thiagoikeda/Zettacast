@@ -95,7 +95,7 @@ class Cookie {
 	 * @brief
 	 * @yields array Nome e conteúdo do cookie.
 	 */
-	public static function iterator(){
+	public static function iterator() {
 		
 		foreach(self::i()->cookiejar as $name => $value):
 			yield [$name => $value];
